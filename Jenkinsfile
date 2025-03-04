@@ -3,7 +3,7 @@ pipeline {
 
     tools {
         // the name of the nodejs configuration in Dashboard > Manage Jenkins > Tools > NodeJS installations
-        nodejs 'nodejs-23-8-0'
+        nodejs 'nodejs-22-6-0'
     }
 
     stages {
