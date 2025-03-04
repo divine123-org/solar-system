@@ -3,13 +3,14 @@ pipeline {
 
     tools {
         // the name of the nodejs configuration in Dashboard > Manage Jenkins > Tools > NodeJS installations
-        nodejs 'nodejs-22-6-0'
+        nodejs 'nodejs-17-0-1'
     }
 
     stages {
         stage('Installing Dependencies') {
             steps {
-                sh 'npm install --no-audit'
+                // sh 'npm install --no-audit'
+                sh 'node -v'
             }
         }
     }
