@@ -5,8 +5,8 @@ Pipeline {
         stage('VM Node Version') {
             steps {
                 sh '''
-                    node -v
-                    npm -v
+                    node --version
+                    npm --version
                 '''
             }
         }
