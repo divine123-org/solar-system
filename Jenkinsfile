@@ -15,9 +15,8 @@ pipeline {
 
         stage('NPM Dependency Audit') {
             steps {
-                sh '''
-                    npm audit --audit-level=critical
-                '''
+                // check crutial dependency vunurabilities from package.json using NPM audit. Fail build if exits
+                sh 'npm audit --audit-level=critical'
             }
         }
     }
