@@ -6,9 +6,9 @@ pipeline {
         nodejs 'nodejs-17-0-1'
     }
 
-    // environment {
-    //     MONGO_URI = "mongodb+srv://supercluster.d83jj.mongodb.net/superData"
-    // }
+    environment {
+        MONGO_URI = "mongodb+srv://supercluster.d83jj.mongodb.net/superData"
+    }
 
     stages {
         stage('Installing Dependencies') {
@@ -29,6 +29,7 @@ pipeline {
                 }
 
                 stage('OWASP Dependency Check') {
+                    options { timestamps() }
                     steps {
                         // check crutial dependency vunurabilities from package.json using 3rd party tool, OWAS depencency check plugin (for nodejs)
                         // Check doc for more details on how to use the command
@@ -51,10 +52,18 @@ pipeline {
         //     options { retry(2) }
         //     steps {
         //         // create a credential in jenkins ui and set the credentialId here
-        //         withCredentials([usernamePassword(credentialsId: '', passwordVariable: 'MONGO_PASSWORD', usernameVariable: 'MONGO_USERNAME')]) {
+        //         withCredentials([usernamePassword(credentialsId: 'mongodb-credential-id', passwordVariable: 'MONGO_PASSWORD', usernameVariable: 'MONGO_USERNAME')]) {
         //             sh 'npm test'
         //         }
         //         // Publish the output of all the test cases
+        //     }
+        // }
+
+        // stage('Code Coverage') {
+        //     steps {
+        //         withCredentials([usernamePassword(credentialsId: 'mongodb-credential-id', passwordVariable: 'MONGO_PASSWORD', usernameVariable: 'MONGO_USERNAME')]) {
+        //             sh 'npm run coverage'
+        //         }
         //     }
         // }
     }
