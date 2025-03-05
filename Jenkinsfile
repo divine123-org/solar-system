@@ -13,11 +13,31 @@ pipeline {
             }
         }
 
-        stage('NPM Dependency Audit') {
-            steps {
-                // check crutial dependency vunurabilities from package.json using NPM audit. Fail build if exits
-                sh 'npm audit --audit-level=critical'
+        stage('Dependency Scanning') {
+            // Scan the dependency using 2 methods in parallel
+            parallel {
+                stage('NPM Dependency Audit') {
+                    steps {
+                        // check crutial dependency vunurabilities from package.json using NPM audit. Fail build if exits
+                        sh 'npm audit --audit-level=critical'
+                    }
+                }
+
+                stage('OWASP Dependency Check') {
+                    steps {
+                        // check crutial dependency vunurabilities from package.json using 3rd party tool, OWAS depencency check plugin (for nodejs)
+                        // Check doc for more details on command
+                        depencencyCheck additionalArguments: '''                
+                        --scan \'./\'
+                        --out \'./\'
+                        --format \'ALL\'
+                        --prettyPrint 
+                        ''', odcInstallation: 'OWAS-Dependency-10' 
+                    }
+                }
             }
         }
+
+        
     }
 }
