@@ -18,7 +18,7 @@ pipeline {
             parallel {
                 stage('NPM Dependency Audit') {
                     steps {
-                        // check crutial dependency vunurabilities from package.json using NPM audit. Fail build if exits
+                        // check crutial dependency vulnerabilities from package.json using NPM audit. Fail build if exits
                         sh 'npm audit --audit-level=critical'
                     }
                 }
@@ -28,11 +28,13 @@ pipeline {
                         // check crutial dependency vunurabilities from package.json using 3rd party tool, OWAS depencency check plugin (for nodejs)
                         // Check doc for more details on how to use the command
                         dependencyCheck additionalArguments: '''                
-                        --scan \'./\'
-                        --out \'./\'
-                        --format \'ALL\'
-                        --prettyPrint 
-                        ''', odcInstallation: 'OWAS-Dependency-10' 
+                            --scan \'./\'
+                            --out \'./\'
+                            --format \'ALL\'
+                            --prettyPrint 
+                        ''', 
+                        odcInstallation: 'OWAS-Dependency-10' 
+                        // dependencyCheckPublisher failedTotalCritical: 1, pattern: '', stopBuild: true
                     }
                 }
             }
