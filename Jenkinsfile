@@ -26,7 +26,7 @@ pipeline {
                 stage('OWASP Dependency Check') {
                     steps {
                         // check crutial dependency vunurabilities from package.json using 3rd party tool, OWAS depencency check plugin (for nodejs)
-                        // Check doc for more details on command
+                        // Check doc for more details on how to use the command
                         dependencyCheck additionalArguments: '''                
                         --scan \'./\'
                         --out \'./\'
