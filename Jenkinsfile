@@ -14,7 +14,7 @@ pipeline {
         }
 
         stage('Dependency Scanning') {
-            // Scan the dependency using 2 methods in parallel
+            // Scan the dependency using 2 methods in parallel.
             parallel {
                 stage('NPM Dependency Audit') {
                     steps {
