@@ -27,7 +27,7 @@ pipeline {
                     steps {
                         // check crutial dependency vunurabilities from package.json using 3rd party tool, OWAS depencency check plugin (for nodejs)
                         // Check doc for more details on command
-                        depencencyCheck additionalArguments: '''                
+                        dependencyCheck additionalArguments: '''                
                         --scan \'./\'
                         --out \'./\'
                         --format \'ALL\'
