@@ -41,7 +41,7 @@ pipeline {
                         odcInstallation: 'OWAS-Dependency-10' 
                         // dependencyCheckPublisher failedTotalCritical: 1, pattern: '', stopBuild: true
                         // junit <complete these two>
-                        // publishHTML
+                        // publishHTML <>
                     }
                 }
             }
