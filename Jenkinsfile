@@ -34,15 +34,15 @@ pipeline {
                         // check crutial dependency vunurabilities from package.json using 3rd party tool, OWAS depencency check plugin (for nodejs)
                         // Check doc for more details on how to use the command
                         dependencyCheck additionalArguments: '''                
-                            --scan \'./\'
-                            --out \'./\'
-                            --format \'ALL\'
-                            --prettyPrint 
-                        ''', 
+                            --scan './'
+                            --out './'
+                            --format 'ALL'
+                            --prettyPrint
+                        ''',
                         odcInstallation: 'OWAS-Dependency-10' 
                         // dependencyCheckPublisher failedTotalCritical: 1, pattern: '', stopBuild: true
                         // junit <complete these two>
-                        // publishHTML <>
+                        // publishHTML <> n
                     }
                 }
             }
