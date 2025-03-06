@@ -39,9 +39,9 @@ pipeline {
                             --format 'ALL'
                             --prettyPrint
                         ''',
-                        odcInstallation: 'OWAS-Dependency-10' 
+                        odcInstallation: 'OWAS-Dependency-9' 
+                        dependencyCheckPublisher failedTotalCritical: 1, pattern: 'dependency-check-report.xml', stopBuild: true
                         sh 'echo $?' // Log the exit code of dependencyCheck
-                        // dependencyCheckPublisher failedTotalCritical: 1, pattern: '', stopBuild: true
                         // junit <complete these two>
                         // publishHTML <> n
                     }
@@ -49,16 +49,16 @@ pipeline {
             }
         }
 
-        // stage('Unit Testing') {
-        //     options { retry(2) }
-        //     steps {
-        //         // create a credential in jenkins ui and set the credentialId here
-        //         withCredentials([usernamePassword(credentialsId: 'mongodb-credential-id', passwordVariable: 'MONGO_PASSWORD', usernameVariable: 'MONGO_USERNAME')]) {
-        //             sh 'npm test'
-        //         }
-        //         // Publish the output of all the test cases
-        //     }
-        // }
+        stage('Unit Testing') {
+            options { retry(2) }
+            steps {
+                // create a credential in jenkins ui and set the credentialId here
+                withCredentials([usernamePassword(credentialsId: 'mongodb-credential-id', passwordVariable: 'MONGO_PASSWORD', usernameVariable: 'MONGO_USERNAME')]) {
+                    sh 'npm test'
+                }
+                // Publish the output of all the test cases
+            }
+        }
 
         // stage('Code Coverage') {
         //     steps {
