@@ -40,7 +40,7 @@ pipeline {
                             --prettyPrint
                         ''',
                         odcInstallation: 'OWAS-Dependency-10' 
-                        sh 'echo $?'
+                        sh 'echo $?' // Log the exit code of dependencyCheck
                         // dependencyCheckPublisher failedTotalCritical: 1, pattern: '', stopBuild: true
                         // junit <complete these two>
                         // publishHTML <> n
