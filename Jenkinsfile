@@ -40,6 +40,7 @@ pipeline {
                             --prettyPrint
                         ''',
                         odcInstallation: 'OWAS-Dependency-10' 
+                        sh 'echo $?'
                         // dependencyCheckPublisher failedTotalCritical: 1, pattern: '', stopBuild: true
                         // junit <complete these two>
                         // publishHTML <> n
