@@ -32,8 +32,8 @@ pipeline {
                         snykSecurity( 
                             snykInstallation: 'Snyk-latest', // Please define a Snyk installation in the Jenkins Global Tool Configuration. This task will not run without a Snyk installation, obviously.
                             snykTokenId: 'snyk-cli-token', 
-                            additionalArguments: 'snyk test --severity-threshold=critical', 
-                        )
+                            additionalArguments: 'snyk test --severity-threshold=critical -d --fail-fast --file=package.json --file=package-lock.json', // Run in Debug Mode to See What’s Happening. Look for slow steps in the logs.
+                            )
                     }
                 }
             }
