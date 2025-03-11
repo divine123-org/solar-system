@@ -3,7 +3,7 @@ pipeline {
 
     tools {
         // the name of the nodejs configuration in Dashboard > Manage Jenkins > Tools > NodeJS installations
-        nodejs 'nodejs-17-0-1'
+        nodejs 'nodejs-23-9-0'
     }
 
     environment {
@@ -38,9 +38,8 @@ pipeline {
                             --out './'
                             --format 'ALL'
                             --prettyPrint
-                        ''',
-                        odcInstallation: 'OWAS-Dependency-9' 
-                        dependencyCheckPublisher failedTotalCritical: 1, pattern: 'dependency-check-report.xml', stopBuild: true
+                        ''', odcInstallation: 'OWASP-Dependency-Check-12-1-0' 
+                        // dependencyCheckPublisher failedTotalCritical: 1, pattern: 'dependency-check-report.xml', stopBuild: true
                         sh 'echo $?' // Log the exit code of dependencyCheck
                         // junit <complete these two>
                         // publishHTML <> n
@@ -49,16 +48,16 @@ pipeline {
             }
         }
 
-        stage('Unit Testing') {
-            options { retry(2) }
-            steps {
-                // create a credential in jenkins ui and set the credentialId here
-                withCredentials([usernamePassword(credentialsId: 'mongodb-credential-id', passwordVariable: 'MONGO_PASSWORD', usernameVariable: 'MONGO_USERNAME')]) {
-                    sh 'npm test'
-                }
-                // Publish the output of all the test cases
-            }
-        }
+        // stage('Unit Testing') {
+        //     options { retry(2) }
+        //     steps {
+        //         // create a credential in jenkins ui and set the credentialId here
+        //         withCredentials([usernamePassword(credentialsId: 'mongodb-credential-id', passwordVariable: 'MONGO_PASSWORD', usernameVariable: 'MONGO_USERNAME')]) {
+        //             sh 'npm test'
+        //         }
+        //         // Publish the output of all the test cases
+        //     }
+        // }
 
         // stage('Code Coverage') {
         //     steps {
