@@ -30,15 +30,13 @@ pipeline {
                 stage('Snyk Security Scan') {
                     steps {
                         snykSecurity( 
-                            snykInstallation: 'Snyk-latest' // Please define a Snyk installation in the Jenkins Global Tool Configuration. This task will not run without a Snyk installation.
-                            snykTokenId: 'snyk-cli-token'
+                            snykInstallation: 'Snyk-latest', // Please define a Snyk installation in the Jenkins Global Tool Configuration. This task will not run without a Snyk installation, obviously.
+                            snykTokenId: 'snyk-cli-token', 
                             additionalArguments: 'snyk test --severity-threshold=critical', 
                         )
                     }
                 }
             }
-
-            
         }
 
         // stage('Unit Testing') {
