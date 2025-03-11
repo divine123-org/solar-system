@@ -19,30 +19,21 @@ pipeline {
         }
 
         stage('Dependency Scanning') {
-            // Scan the dependency using 2 methods in parallel.
             parallel {
                 stage('NPM Dependency Audit') {
                     steps {
-                        // check crutial dependency vulnerabilities from package.json using NPM audit. Fail build if exits
+                        // Fail the build if critical vunerability exist
                         sh 'npm audit --audit-level=critical'
                     }
                 }
 
-                stage('OWASP Dependency Check') {
-                    options { timestamps() }
+                stage('Snyk Security Scan') {
                     steps {
-                        // check crutial dependency vunurabilities from package.json using 3rd party tool, OWAS depencency check plugin (for nodejs)
-                        // Check doc for more details on how to use the command
-                        dependencyCheck additionalArguments: '''                
-                            --scan './'
-                            --out './'
-                            --format 'ALL'
-                            --prettyPrint
-                        ''', odcInstallation: 'OWASP-Dependency-Check-12-1-0' 
-                        // dependencyCheckPublisher failedTotalCritical: 1, pattern: 'dependency-check-report.xml', stopBuild: true
-                        sh 'echo $?' // Log the exit code of dependencyCheck
-                        // junit <complete these two>
-                        // publishHTML <> n
+                        snykSecurity( 
+                            snykInstallation: 'Snyk-latest' // Please define a Snyk installation in the Jenkins Global Tool Configuration. This task will not run without a Snyk installation.
+                            snykTokenId: 'snyk-cli-token'
+                            additionalArguments: 'snyk test --severity-threshold=critical', 
+                        )
                     }
                 }
             }
