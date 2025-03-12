@@ -51,7 +51,7 @@ pipeline {
                         //     ])
                         // }
                         success {
-                            echo '✅ Security scan completed successfully!'
+                            echo '✅ Snyk Security scan completed successfully!'
                         }
                         failure {
                             echo '❌ Build failed due to security vulnerabilities!'
