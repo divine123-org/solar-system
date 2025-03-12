@@ -33,7 +33,7 @@ pipeline {
                         // Comment steps
                         withCredentials([string(credentialsId: 'snyk-cli-token', variable: 'SNYK_API_KEY')]) {
                             script {
-                                def snykExitCode = sh(returnStatus: true, script: 'snyk test --token=$SNYK_API_KEY --severity-threshold=high --fail-on=upgradable -d --fail-fast --file=package.json --file=package-lock.json --timeout=300 --json > snyk_report.json')
+                                def snykExitCode = sh(returnStatus: true, script: 'snyk test --severity-threshold=high --fail-on=upgradable -d --fail-fast --file=package.json --file=package-lock.json --timeout=300 --json > snyk_report.json')
                                 if (snykExitCode != 0) {
                                     error('Snyk scan failed due to vulnerabilities')
                                 }
