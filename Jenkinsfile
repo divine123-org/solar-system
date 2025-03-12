@@ -15,6 +15,7 @@ pipeline {
             options { timestamps() }
             steps {
                 sh 'npm install --no-audit'
+                sh 'npm install snyk-to-html -g'
             }
         }
 
@@ -29,27 +30,26 @@ pipeline {
 
                 stage('Snyk Security Scan') {
                     steps {
-                        // Run Snyk Security Scan
-                        snykSecurity( 
-                            snykInstallation: 'Snyk-latest', // Please define a Snyk installation in the Jenkins Global Tool Configuration. This task will not run without a Snyk installation, obviously.
-                            snykTokenId: 'snyk-cli-token', 
-                            additionalArguments: 'snyk test --severity-threshold=high --fail-on=upgradable -d --fail-fast --file=package.json --file=package-lock.json --timeout=300', // Run in Debug Mode to See What’s Happening. Look for slow steps in the logs.
-                        )
-                        
-                        // Convert Snyk JSON report to HTML
-                        // sh 'cat 2025-03-11T14-50-42-678435898Z_snyk_report.json | snyk-to-html -o snyk_report.html'
+                        // Comment steps
+                        withCredentials([string(credentialsId: 'snyk-cli-token', variable: 'SNYK_API_KEY')]) {
+                            def snykExitCode = sh(returnStatus: true, script: 'snyk test --severity-threshold=high --fail-on=upgradable -d --fail-fast --file=package.json --file=package-lock.json --timeout=300 --json > snyk_report.json')
+                            if (snykExitCode != 0) {
+                                error('Snyk scan failed due to vulnerabilities')
+                            }
+                            sh 'snyk-to-html -i snyk_report.json -o snyk_dependency_check_report.html'
+                        }
                     }
 
                     post {
-                        // always {
-                        //     // Archive Snyk JSON Report
-                        //     archiveArtifacts artifacts: '*snyk_report.json', onlyIfSuccessful: true
-
-                        //     // Publish HTML Report
-                        //     publishHTML([
-                        //         allowMissing: false, alwaysLinkToLastBuild: true, icon: '', keepAll: true, reportDir: './', reportFiles: 'snyk_report.html', reportName: 'Dependency Check HTML Report', useWrapperFileDirectly: true
-                        //     ])
-                        // }
+                        always {
+                            // Archive Snyk JSON Report
+                            archiveArtifacts artifacts: 'snyk_report.json', onlyIfSuccessful: true
+                            archiveArtifacts artifacts: 'snyk_dependency_check_report', onlyIfSuccessful: true
+                            // Publish HTML Report
+                            publishHTML([
+                                allowMissing: false, alwaysLinkToLastBuild: true, icon: '', keepAll: true, reportDir: './', reportFiles: 'snyk_dependency_check_report.html', reportName: 'Dependency Check HTML Report', useWrapperFileDirectly: true
+                            ])
+                        }
                         success {
                             echo '✅ Snyk Security scan completed successfully!'
                         }
