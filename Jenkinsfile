@@ -33,19 +33,21 @@ pipeline {
                         // Comment steps
                         withCredentials([string(credentialsId: 'snyk-cli-token', variable: 'SNYK_API_KEY')]) {
                             script {
-                                def snykExitCode = sh(returnStatus: true, script: 'snyk test --severity-threshold=high --fail-on=upgradable -d --fail-fast --file=package.json --file=package-lock.json --timeout=300 --json > snyk_report.json')
+                                // Run Snyk test, capture output even on failure
+                                def snykExitCode = sh(returnStatus: true, script: 'snyk test --severity-threshold=high --fail-on=upgradable -d --file=package.json --file=package-lock.json --timeout=300 --json > snyk_report.json 2>&1')
+                                // Always generate HTML report
+                                sh 'snyk-to-html -i snyk_report.json -o snyk_dependency_check_report.html'
                                 if (snykExitCode != 0) {
-                                    error('Snyk scan failed due to vulnerabilities')
+                                    error('Snyk scan found vulnerabilities - check snyk_report.json or HTML report for details')
                                 }
                             }
-                            sh 'snyk-to-html -i snyk_report.json -o snyk_dependency_check_report.html'
                         }
                     }
                     post {
                         always {
                             // Archive Snyk JSON Report
-                            archiveArtifacts artifacts: 'snyk_report.json', onlyIfSuccessful: true
-                            archiveArtifacts artifacts: 'snyk_dependency_check_report', onlyIfSuccessful: true
+                            archiveArtifacts artifacts: 'snyk_report.json', allowEmptyArchive: true,onlyIfSuccessful: false
+                            archiveArtifacts artifacts: 'snyk_dependency_check_report.html', allowEmptyArchive: true, onlyIfSuccessful: false
                             // Publish HTML Report
                             publishHTML([
                                 allowMissing: false, alwaysLinkToLastBuild: true, icon: '', keepAll: true, reportDir: './', reportFiles: 'snyk_dependency_check_report.html', reportName: 'Dependency Check HTML Report', useWrapperFileDirectly: true
