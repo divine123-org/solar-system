@@ -39,7 +39,7 @@ pipeline {
 
                                 // Debug token and auth
                                 sh 'echo "SNYK_API_KEY is set" || echo "SNYK_API_KEY is empty"'
-                                // sh 'snyk auth $SNYK_API_KEY || true'  // Authenticate with token, ignore failure
+                                sh 'snyk auth $SNYK_API_KEY || true'  // Authenticate with token, ignore failure
 
                                 // Run Snyk test, capture output even on failure
                                 def snykExitCode = sh(returnStatus: true, script: 'snyk test --severity-threshold=high --fail-on=upgradable -d --json | tee snyk_report.json')
