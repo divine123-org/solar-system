@@ -34,8 +34,10 @@ pipeline {
                         // Comment steps
                         withCredentials([string(credentialsId: 'snyk-cli-token', variable: 'SNYK_API_KEY')]) {
                             script {
+                                // Ensure Snyk is available
+                                sh 'which snyk || npm install -g snyk'
                                 // Run Snyk test, capture output even on failure
-                                def snykExitCode = sh(returnStatus: true, script: 'snyk test --severity-threshold=high --fail-on=upgradable -d --json > snyk_report.json 2>&1')
+                                def snykExitCode = sh(returnStatus: true, script: 'snyk test --severity-threshold=high --fail-on=upgradable -d --json | tee snyk_report.json')
                                 // Always generate HTML report
                                 sh 'snyk-to-html -i snyk_report.json -o snyk_dependency_check_report.html'
                                 if (snykExitCode != 0) {
