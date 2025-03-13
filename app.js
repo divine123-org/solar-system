@@ -4,6 +4,7 @@ const express = require('express');
 const OS = require('os');
 const bodyParser = require('body-parser');
 const mongoose = require("mongoose");
+mongoose.set('strictQuery', false); // Keeps current behavior for Mongoose 7
 const app = express();
 const cors = require('cors')
 const serverless = require('serverless-http')
