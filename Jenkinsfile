@@ -50,13 +50,9 @@ pipeline {
                     }
                     post {
                         always {
-                            // Archive Snyk JSON Report
+                            // Archive Snyk JSON Report and HTML Report
                             archiveArtifacts artifacts: 'snyk_report.json', allowEmptyArchive: true,onlyIfSuccessful: false
-                            archiveArtifacts artifacts: 'snyk_dependency_check_report.html', allowEmptyArchive: true, onlyIfSuccessful: false
-                            // Publish HTML Report
-                            publishHTML([
-                                allowMissing: false, alwaysLinkToLastBuild: true, icon: '', keepAll: true, reportDir: './', reportFiles: 'snyk_dependency_check_report.html', reportName: 'Dependency Check HTML Report', useWrapperFileDirectly: true
-                            ])
+                            archiveArtifacts artifacts: 'snyk_dependency_check_report.html', allowEmptyArchive: true, onlyIfSuccessful: false                            
                         }
                         success {
                             echo '✅ Build passed no security vunerability!'
@@ -71,16 +67,12 @@ pipeline {
 
         stage('Unit Testing') {
             steps {
-                sh 'Dependency scanning stage passed'
-            }
-        //     options { retry(2) }
-        //     steps {
         //         // create a credential in jenkins ui and set the credentialId here
         //         withCredentials([usernamePassword(credentialsId: 'mongodb-credential-id', passwordVariable: 'MONGO_PASSWORD', usernameVariable: 'MONGO_USERNAME')]) {
-        //             sh 'npm test'
+                sh 'npm test'
         //         }
         //         // Publish the output of all the test cases
-        //     }
+            }
         }
 
         // stage('Code Coverage') {
