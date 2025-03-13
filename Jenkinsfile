@@ -67,9 +67,12 @@ pipeline {
 
         stage('Unit Testing') {
             steps {
+                // pinpoint where the warning is triggered - debugging.
+                sh 'node --trace-deprecation node_modules/mocha/bin/mocha app-test.js --timeout 10000 --reporter mocha-junit-reporter --exit'
         //         // create a credential in jenkins ui and set the credentialId here
         //         withCredentials([usernamePassword(credentialsId: 'mongodb-credential-id', passwordVariable: 'MONGO_PASSWORD', usernameVariable: 'MONGO_USERNAME')]) {
-                sh 'npm test'
+                // Use the output of npm test to run the node --trace comand
+                // sh 'npm test'
         //         }
         //         // Publish the output of all the test cases
             }
