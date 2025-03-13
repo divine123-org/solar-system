@@ -69,7 +69,8 @@ pipeline {
             steps {
         //         // create a credential in jenkins ui and set the credentialId here
         //         withCredentials([usernamePassword(credentialsId: 'mongodb-credential-id', passwordVariable: 'MONGO_PASSWORD', usernameVariable: 'MONGO_USERNAME')]) {            
-                sh 'npm test || exit 1'
+                // sh 'npm test || exit 1'
+                sh 'npm test'
         //         }
                 // Publish the output of all the test cases
                 junit allowEmptyResults: true, stdioRetention: '', testResults: 'test-results.xml'
