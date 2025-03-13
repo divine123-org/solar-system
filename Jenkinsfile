@@ -2,8 +2,9 @@ pipeline {
     agent any
 
     tools {
-        // the name of the nodejs configuration in Dashboard > Manage Jenkins > Tools > NodeJS installations
+        // the name of the configuration Tools from Jenkins. Dashboard > Manage Jenkins > Tools > NodeJS installations
         nodejs 'nodejs-23-9-0'
+        snyk 'Snyk-latest'
     }
 
     environment {
@@ -34,7 +35,7 @@ pipeline {
                         withCredentials([string(credentialsId: 'snyk-cli-token', variable: 'SNYK_API_KEY')]) {
                             script {
                                 // Run Snyk test, capture output even on failure
-                                def snykExitCode = sh(returnStatus: true, script: 'snyk test --severity-threshold=high --fail-on=upgradable -d --timeout=300 --json > snyk_report.json 2>&1')
+                                def snykExitCode = sh(returnStatus: true, script: 'snyk test --severity-threshold=high --fail-on=upgradable -d --json > snyk_report.json 2>&1')
                                 // Always generate HTML report
                                 sh 'snyk-to-html -i snyk_report.json -o snyk_dependency_check_report.html'
                                 if (snykExitCode != 0) {
