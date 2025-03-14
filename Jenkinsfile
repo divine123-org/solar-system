@@ -4,7 +4,7 @@ pipeline {
     tools {
         // the name of the configuration Tools from Jenkins. Dashboard > Manage Jenkins > Tools > NodeJS installations
         nodejs 'nodejs-23-9-0'
-        snyk 'Snyk-latest'
+        // snyk 'Snyk-latest'
     }
 
     environment {
@@ -13,6 +13,10 @@ pipeline {
         MONGODB_CREDS = credentials('mongo-db-credentials')
         MONGODB_USERNAME = credentials('mongo-db-username')
         MONGODB_PASSWORD = credentials('mongo-db-password')
+        // Define the Snyk tool, as configured in your Jenkins global configuration, as an environment variable
+        SNYK_HOME = tool 'Snyk-latest'
+        // Define the Sonar scanner tool, as an environment variable
+        SONAR_SCANNER_HOME = tool 'sonarqube-scanner-7-0-2'
     }
 
     stages {
@@ -37,18 +41,24 @@ pipeline {
                     steps {
                         withCredentials([string(credentialsId: 'snyk-cli-token', variable: 'SNYK_API_KEY')]) {
                             script {
-                                // Ensure Snyk is available
-                                sh 'which snyk || npm install -g snyk'
+                                // Echo the SNYK_HOME value to verify it
+                                sh 'echo "Snyk home directory: $SNYK_HOME"'
+                                
+                                // Echo the full assumed path to Snyk executable
+                                sh 'echo "Snyk path: $SNYK_HOME/bin/snyk"'
+                                
+                                // Optionally, test the Snyk version to confirm it works
+                                sh '$SNYK_HOME/bin/snyk --version'
 
                                 // Debug token and auth
                                 sh 'echo "SNYK_API_KEY is set" || echo "SNYK_API_KEY is empty"'
-                                sh 'snyk auth $SNYK_API_KEY || true'  // Authenticate with token, ignore failure
+                                sh '$SNYK_HOME/bin/snyk auth $SNYK_API_KEY || true'  // Authenticate with token, ignore failure
 
                                 // Run Snyk test
-                                sh 'snyk test --severity-threshold=critical --fail-on=upgradable -d --json | tee snyk_report.json'
+                                sh '$SNYK_HOME/bin/snyk test --severity-threshold=critical --fail-on=upgradable -d --json | tee snyk_report.json'
                                 
                                 // Always generate HTML report
-                                sh 'snyk-to-html -i snyk_report.json -o snyk_dependency_check_report.html'
+                                sh '$SNYK_HOME/bin/snyk-to-html -i snyk_report.json -o snyk_dependency_check_report.html'
                             }
                         }
                     }
@@ -70,6 +80,17 @@ pipeline {
                 catchError(buildResult: 'SUCCESS', message: 'Oops! Would write more test coverage in futur releases.', stageResult: 'UNSTABLE') {
                     sh 'npm run coverage'
                 }
+            }
+        }
+
+        stage('SAST - SonarQube') {
+            steps {
+                // Echo the SONAR_SCANNER_HOME value to verify it
+                sh 'echo "SonarQube home directory: $SONAR_SCANNER_HOME"'
+                // sh '''
+                //     $SONAR_SCANNER_HOME/bin/sonar-scanner \
+                //         -Dsonar.projectKey
+                // '''
             }
         }
     }
