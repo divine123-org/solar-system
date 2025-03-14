@@ -11,6 +11,8 @@ pipeline {
         // Teacher didn't provide us with the db. So skipping.
         MONGO_URI = "mongodb+srv://supercluster.d83jj.mongodb.net/superData"
         MONGODB_CREDS = credentials('mongo-db-credentials')
+        MONGODB_USERNAME = credentials('mongo-db-username')
+        MONGODB_PASSWORD = credentials('mongo-db-password')
     }
 
     stages {
@@ -50,19 +52,6 @@ pipeline {
                             }
                         }
                     }
-                    post {
-                        always {
-                            // Archive Snyk JSON Report and HTML Report
-                            archiveArtifacts artifacts: 'snyk_report.json', allowEmptyArchive: true,onlyIfSuccessful: false
-                            archiveArtifacts artifacts: 'snyk_dependency_check_report.html', allowEmptyArchive: true, onlyIfSuccessful: false                            
-                        }
-                        success {
-                            echo '✅ Build passed no security vunerability!'
-                        }
-                        failure {
-                            echo '❌ Build failed due to security vulnerabilities!'
-                        }
-                    }
                 }
             }
         }
@@ -70,8 +59,6 @@ pipeline {
         // stage('Unit Testing') {
         //     steps {
         //         sh 'npm test'
-        //         // Publish the output of all the test cases
-        //         junit allowEmptyResults: true, stdioRetention: '', testResults: 'test-results.xml'
         //     }
         // }
 
@@ -86,4 +73,16 @@ pipeline {
             }
         }
     }
+
+    post {
+        always {
+            // Archive Snyk JSON Report and HTML Report
+            archiveArtifacts artifacts: 'snyk_report.json', allowEmptyArchive: true,onlyIfSuccessful: false
+            archiveArtifacts artifacts: 'snyk_dependency_check_report.html', allowEmptyArchive: true, onlyIfSuccessful: false                                                    
+
+            // Publish the output of all the test cases
+            junit allowEmptyResults: true, stdioRetention: '', testResults: 'test-results.xml'
+        }
+    }
+
 }
