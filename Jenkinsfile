@@ -4,7 +4,6 @@ pipeline {
     tools {
         // the name of the configuration Tools from Jenkins. Dashboard > Manage Jenkins > Tools > NodeJS installations
         nodejs 'nodejs-23-9-0'
-        // snyk 'Snyk-latest'
     }
 
     environment {
@@ -44,10 +43,7 @@ pipeline {
                                 // Echo the SNYK_HOME value to verify it
                                 sh 'echo "Snyk home directory: $SNYK_HOME"'
 
-                                sh 'ls -l $SNYK_HOME'  // Check contents
-                                
-                                // Echo the full assumed path to Snyk executable
-                                // sh 'echo "Snyk path: $SNYK_HOME/snyk-linux"'
+                                // sh 'ls -l $SNYK_HOME'  // Check contents
                                 
                                 // Optionally, test the Snyk version to confirm it works
                                 sh '$SNYK_HOME/snyk-linux --version'
@@ -87,8 +83,8 @@ pipeline {
 
         stage('SAST - SonarQube') {
             steps {
-                // Echo the SONAR_SCANNER_HOME value to verify it
-                sh 'echo "SonarQube home directory: $SONAR_SCANNER_HOME"'
+                // Echo the SONAR_SCANNER_HOME contents to verify it
+                sh 'ls -l $SONAR_SCANNER_HOME'
                 // sh '''
                 //     $SONAR_SCANNER_HOME/bin/sonar-scanner \
                 //         -Dsonar.projectKey
