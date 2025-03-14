@@ -68,7 +68,7 @@ pipeline {
         stage('Unit Testing') {
             steps {
                 // create a credential in jenkins ui and set the credentialId here
-                withCredentials([usernamePassword(credentialsId: 'mongodb-credential-id', passwordVariable: 'MONGO_PASSWORD', usernameVariable: 'MONGO_USERNAME')]) {            
+                withCredentials([usernamePassword(credentialsId: 'mongo-db-credentials', passwordVariable: 'MONGO_PASSWORD', usernameVariable: 'MONGO_USERNAME')]) {            
                     sh 'npm test'
                 }
                 // Publish the output of all the test cases
