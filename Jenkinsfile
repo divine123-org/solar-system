@@ -43,22 +43,24 @@ pipeline {
                             script {
                                 // Echo the SNYK_HOME value to verify it
                                 sh 'echo "Snyk home directory: $SNYK_HOME"'
+
+                                sh 'ls -l $SNYK_HOME'  // Check contents
                                 
                                 // Echo the full assumed path to Snyk executable
                                 sh 'echo "Snyk path: $SNYK_HOME/bin/snyk"'
                                 
                                 // Optionally, test the Snyk version to confirm it works
-                                sh '$SNYK_HOME/bin/snyk --version'
+                                sh '$SNYK_HOME/snyk --version'
 
                                 // Debug token and auth
                                 sh 'echo "SNYK_API_KEY is set" || echo "SNYK_API_KEY is empty"'
-                                sh '$SNYK_HOME/bin/snyk auth $SNYK_API_KEY || true'  // Authenticate with token, ignore failure
+                                sh '$SNYK_HOME/snyk auth $SNYK_API_KEY || true'  // Authenticate with token, ignore failure
 
                                 // Run Snyk test
-                                sh '$SNYK_HOME/bin/snyk test --severity-threshold=critical --fail-on=upgradable -d --json | tee snyk_report.json'
+                                sh '$SNYK_HOME/snyk test --severity-threshold=critical --fail-on=upgradable -d --json | tee snyk_report.json'
                                 
                                 // Always generate HTML report
-                                sh '$SNYK_HOME/bin/snyk-to-html -i snyk_report.json -o snyk_dependency_check_report.html'
+                                sh '$SNYK_HOME/snyk-to-html -i snyk_report.json -o snyk_dependency_check_report.html'
                             }
                         }
                     }
